@@ -18,10 +18,13 @@ class CartView(APIView):
         serializer = CartSerializer(cart, many=False)
         return Response(serializer.data, status=200)
 
+
     def delete(self, request):
-        print(request.data)
-        result = {}
-        return Response(status=200)
+        cart = get_cart(request)
+        cart.delete()
+        get_cart(request)
+        result = {'result': True,'message':'Корзина очищена'}
+        return Response(result, status=200)
 
     def patch(self, request):
         print(request.data)
@@ -42,18 +45,19 @@ class CartView(APIView):
             cart=cart,
             product_id=request.data['product_id'],
             unit_id=request.data['unit_id']
-
         )
+
         if created:
             print('created')
             cart_item.amount = request.data['amount']
             cart_item.save()
+            result = {'result': True, 'message': 'Товар добавлен'}
         else:
             print('updated')
             cart_item.amount += Decimal(request.data['amount'])
             cart_item.save()
+            result = {'result': True, 'message': 'Товар изменен'}
 
-        result = {}
         return Response(result, status=200)
 
 
