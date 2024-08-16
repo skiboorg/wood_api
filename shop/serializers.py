@@ -2,7 +2,7 @@ from rest_framework import exceptions, serializers, status, generics
 
 
 from .models import *
-
+from django.conf import settings
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,12 +60,13 @@ class ProductShortSerializer(serializers.ModelSerializer):
             'cat_slug',
             'subcat_slug',
             'subcat_name',
-            'subcat_text'
+            'subcat_text',
+            'display_price'
         ]
     def get_image(self,obj):
         main_image = obj.images.filter(is_main=True)
         if main_image.exists():
-            return main_image.first().image.url
+            return f'{settings.IMG_URL}{main_image.first().image.url}'
         else:
             return None
     def get_cat_slug(self,obj):
@@ -112,7 +113,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CategoryShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['image','name','slug']
+        fields = ['image','name','slug','display_amount']
 
 
 class ServicePriceSerializer(serializers.ModelSerializer):

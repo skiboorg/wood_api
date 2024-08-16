@@ -8,4 +8,5 @@ urlpatterns = [
     path('category/<slug>', views.GetCategory.as_view()),
     path('subcategory/<slug>', views.GetSubCategory.as_view()),
     path('product/<slug>', views.GetProduct.as_view()),
+    path('popular', views.GetPopularProducts.as_view()),
 ]

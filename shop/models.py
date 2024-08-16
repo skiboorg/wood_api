@@ -11,6 +11,7 @@ class Category(models.Model):
     slug = models.CharField('ЧПУ', max_length=255,blank=True, null=True)
     short_description = models.TextField('Короткое описание', blank=True, null=False)
     html_content = CKEditor5Field('SEO текст', blank=True, null=False)
+    display_amount = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
         return f'{self.name}'

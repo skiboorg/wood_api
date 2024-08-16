@@ -38,3 +38,7 @@ class GetService(generics.RetrieveAPIView):
     serializer_class = ServiceSerializer
     queryset = Service.objects.filter()
     lookup_field = 'slug'
+
+class GetPopularProducts(generics.ListAPIView):
+    serializer_class = ProductShortSerializer
+    queryset = Product.objects.filter(is_popular=True, is_active=True)

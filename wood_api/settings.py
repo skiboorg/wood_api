@@ -20,6 +20,7 @@ AUTH_USER_MODEL = 'user.User'
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
+IMG_URL = 'http://localhost:8000'
 
 # Application definition
 
