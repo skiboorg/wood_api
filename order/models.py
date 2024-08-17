@@ -1,5 +1,5 @@
 from django.db import models
-
+from decimal import Decimal
 class Order(models.Model):
     order_id = models.CharField('Номер заказа', max_length=255, blank=True, null=True)
     customer = models.CharField('ФИО', max_length=255, blank=True, null=True)
@@ -9,12 +9,17 @@ class Order(models.Model):
     payment_type = models.CharField('тип оплаты', max_length=255, blank=True, null=True)
     delivery_type = models.CharField('тип доставки', max_length=255, blank=True, null=True)
     delivery_address = models.TextField('адрес доставки', blank=True, null=True)
-    # @property
-    # def total_price(self):
-    #     price = 0
-    #     for item in self.items.all():
-    #         price += item.price * item.amount
-    #     return price
+    created_at = models.DateTimeField('Создан',auto_now_add=True, null=True)
+    is_paid = models.BooleanField('Оплачен', default=False, null=False)
+    is_done = models.BooleanField('Обработан', default=False, null=False)
+    is_deliveried = models.BooleanField('Доставлен', default=False, null=False)
+
+    @property
+    def total_price(self):
+        price = 0
+        for item in self.items.all():
+            price += Decimal(item.price) * item.amount
+        return price
 
 
 class OrderItem(models.Model):
