@@ -108,12 +108,16 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class SubCategoryForShortCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ['name','slug']
 
 class CategoryShortSerializer(serializers.ModelSerializer):
+    sub_categories = SubCategoryForShortCategorySerializer(many=True, required=False, read_only=True)
     class Meta:
         model = Category
-        fields = ['image','name','slug','display_amount']
+        fields = ['image','name','slug','display_amount','sub_categories']
 
 
 class ServicePriceSerializer(serializers.ModelSerializer):
@@ -132,3 +136,20 @@ class ServiceShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = '__all__'
+
+
+class MaterialShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['name','slug','image']
+
+
+class MaterialSerializer(serializers.ModelSerializer):
+    material_products = serializers.SerializerMethodField()
+    class Meta:
+        model = Material
+        fields = '__all__'
+
+    def get_material_products(self, obj):
+        active_products = obj.material_products.filter(is_active=True)
+        return ProductShortSerializer(active_products, many=True).data

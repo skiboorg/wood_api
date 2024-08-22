@@ -3,6 +3,30 @@ from pytils.translit import slugify
 from django_ckeditor_5.fields import CKEditor5Field
 from django_resized import ResizedImageField
 
+
+
+class Material(models.Model):
+    image = ResizedImageField(size=[800, 600], quality=95, force_format='WEBP', upload_to='shop/product/material',
+                              blank=False, null=True)
+    name = models.CharField('Название', max_length=255, blank=False, null=False)
+    slug = models.CharField('ЧПУ', max_length=255, blank=True, null=True)
+    short_description = models.TextField('Короткое описание', blank=True, null=False)
+    html_content = CKEditor5Field('SEO текст', blank=True, null=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+
+        verbose_name = 'Материал'
+        verbose_name_plural = 'Материалы'
+
+
 class Category(models.Model):
     order_num = models.IntegerField(default=1, null=True)
     image = ResizedImageField(size=[420, 420], quality=95, force_format='WEBP', upload_to='shop/category/images',
@@ -51,9 +75,11 @@ class SubCategory(models.Model):
         verbose_name_plural = 'Подкатегории'
 
 class Product(models.Model):
-    article = models.CharField('Артикул',max_length=20,blank=True, null=True)
+    article = models.CharField('Артикул', max_length=20,blank=True, null=True)
+    size = models.CharField('Размер', max_length=100,blank=True, null=True)
     order_num = models.IntegerField(default=1, null=True)
     subcategory = models.ForeignKey(SubCategory,blank=True,null=True,on_delete=models.CASCADE, related_name='products')
+    material = models.ForeignKey(Material,blank=True,null=True,on_delete=models.CASCADE, related_name='material_products')
     is_new = models.BooleanField('Новинка', default=False, null=False)
     is_in_stock = models.BooleanField('В наличии?', default=True, null=False)
     is_popular = models.BooleanField(default=False, null=False)

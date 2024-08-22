@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('categories', views.GetCategories.as_view()),
+    path('materials', views.GetMaterials.as_view()),
+    path('material/<slug>', views.GetMaterial.as_view()),
     path('services', views.GetServices.as_view()),
     path('service/<slug>', views.GetService.as_view()),
     path('category/<slug>', views.GetCategory.as_view()),
