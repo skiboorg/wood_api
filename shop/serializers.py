@@ -4,6 +4,10 @@ from rest_framework import exceptions, serializers, status, generics
 from .models import *
 from django.conf import settings
 
+class MaterialShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['name','slug','image']
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
     cat_name = serializers.SerializerMethodField()
     subcat_slug = serializers.SerializerMethodField()
     subcat_name = serializers.SerializerMethodField()
+    material = MaterialShortSerializer(many=False, read_only=True)
     class Meta:
         model = Product
         fields = '__all__'
@@ -48,7 +53,7 @@ class ProductShortSerializer(serializers.ModelSerializer):
     subcat_name = serializers.SerializerMethodField()
     subcat_text = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
-
+    material = MaterialShortSerializer(many=False, read_only=True)
     class Meta:
         model = Product
         fields = [
@@ -63,7 +68,8 @@ class ProductShortSerializer(serializers.ModelSerializer):
             'subcat_slug',
             'subcat_name',
             'subcat_text',
-            'display_price'
+            'display_price',
+            'material'
         ]
     def get_image(self,obj):
         main_image = obj.images.filter(is_main=True)
@@ -140,10 +146,7 @@ class ServiceShortSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MaterialShortSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Material
-        fields = ['name','slug','image']
+
 
 
 class MaterialSerializer(serializers.ModelSerializer):
