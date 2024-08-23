@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 
 from cart.views import get_cart
 from .serializers import *
@@ -30,8 +31,8 @@ class OrderView(APIView):
             phone=data['phone'],
             email=data['email'],
             comment=data['comment'],
-            payment_type=data['payment_type'],
-            delivery_type=data['delivery_type'],
+            payment_type_id=data['payment_type'],
+            delivery_type_id=data['delivery_type'],
             delivery_address=data['delivery_address']
         )
         for item in cart.items.all():
@@ -48,3 +49,10 @@ class OrderView(APIView):
         return Response(result, status=200)
 
 
+class GetDeliveries(generics.ListAPIView):
+    serializer_class = DeliverySerializer
+    queryset = Delivery.objects.all()
+
+class GetPayments(generics.ListAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()

@@ -4,6 +4,7 @@ from rest_framework import exceptions, serializers, status, generics
 from .models import *
 from django.conf import settings
 
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -54,6 +55,7 @@ class ProductShortSerializer(serializers.ModelSerializer):
             'article',
             'is_new',
             'is_in_stock',
+            'size',
             'image',
             'name',
             'slug',

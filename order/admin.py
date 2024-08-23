@@ -19,4 +19,6 @@ class OrderAdmin(NestedModelAdmin):
     total_price.short_description = 'Сумма заказа'
 
 admin.site.register(Order,OrderAdmin)
+admin.site.register(Delivery)
+admin.site.register(Payment)
 

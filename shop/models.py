@@ -76,7 +76,7 @@ class SubCategory(models.Model):
 
 class Product(models.Model):
     article = models.CharField('Артикул', max_length=20,blank=True, null=True)
-    size = models.CharField('Размер', max_length=100,blank=True, null=True)
+    size = models.CharField('Размер', max_length=100, blank=True, null=True)
     order_num = models.IntegerField(default=1, null=True)
     subcategory = models.ForeignKey(SubCategory,blank=True,null=True,on_delete=models.CASCADE, related_name='products')
     material = models.ForeignKey(Material,blank=True,null=True,on_delete=models.CASCADE, related_name='material_products')
