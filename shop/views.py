@@ -52,3 +52,12 @@ class GetMaterial(generics.RetrieveAPIView):
 class GetPopularProducts(generics.ListAPIView):
     serializer_class = ProductShortSerializer
     queryset = Product.objects.filter(is_active=True)
+
+class SearchProducts(generics.ListAPIView):
+    serializer_class = ProductShortSerializer
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Product.objects.filter(is_active=True, name__icontains=query)
+        else:
+            return Product.objects.none()
