@@ -58,6 +58,6 @@ class SearchProducts(generics.ListAPIView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
-            return Product.objects.filter(is_active=True, name__icontains=query)
+            return Product.objects.filter(is_active=True, name_lower__icontains=query.lower())
         else:
             return Product.objects.none()

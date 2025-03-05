@@ -143,6 +143,7 @@ class SubCategory(models.Model):
 class Product(models.Model):
     article = models.CharField('Артикул', max_length=20,blank=True, null=True)
     name = models.CharField('Название', max_length=255, blank=False, null=True)
+    name_lower = models.CharField('Название', max_length=255, blank=False, null=True, editable=False)
     slug = models.CharField('ЧПУ', max_length=255,
                             help_text='Если не заполнено, создается на основе поля Назавание',
                             blank=True, null=True, editable=False)
@@ -164,6 +165,7 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        self.name_lower = self.name.lower()
         super().save(*args, **kwargs)
 
 
