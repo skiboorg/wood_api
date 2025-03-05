@@ -3,11 +3,77 @@ from pytils.translit import slugify
 from django_ckeditor_5.fields import CKEditor5Field
 from django_resized import ResizedImageField
 
+class UnitLen(models.Model):
+    name = models.CharField('Длина', max_length=255, blank=False, null=False)
 
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+
+        verbose_name = 'Длина'
+        verbose_name_plural = 'Длина'
+
+
+class UnitWidth(models.Model):
+    name = models.CharField('Ширина', max_length=255, blank=False, null=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = 'Ширина'
+        verbose_name_plural = 'Ширина'
+
+class UnitThin(models.Model):
+    name = models.CharField('Толщина', max_length=255, blank=False, null=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = 'Толщина'
+        verbose_name_plural = 'Толщина'
+
+class MaterialTag(models.Model):
+    name = models.CharField('Название', max_length=255, blank=False, null=False)
+    slug = models.CharField('ЧПУ', max_length=255, blank=True, null=True, editable=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+
+        verbose_name = 'Тег материала'
+        verbose_name_plural = 'Теги материалов'
+
+class MaterialRecommend(models.Model):
+    name = models.CharField('Название', max_length=255, blank=False, null=False)
+    slug = models.CharField('ЧПУ', max_length=255, blank=True, null=True, editable=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+
+        verbose_name = 'Материал рекомендуется для'
+        verbose_name_plural = 'Материал рекомендуется для'
 
 class Material(models.Model):
-    image = ResizedImageField(size=[800, 600], quality=95, force_format='WEBP', upload_to='shop/product/material',
+    image = ResizedImageField(size=[480, 320], quality=100, force_format='WEBP', upload_to='shop/product/material',
                               blank=False, null=True)
+    tags = models.ManyToManyField(MaterialTag, blank=True)
+    recommend = models.ManyToManyField(MaterialRecommend, blank=True)
     name = models.CharField('Название', max_length=255, blank=False, null=False)
     slug = models.CharField('ЧПУ', max_length=255, blank=True, null=True)
     short_description = models.TextField('Короткое описание', blank=True, null=False)
@@ -29,7 +95,7 @@ class Material(models.Model):
 
 class Category(models.Model):
     order_num = models.IntegerField(default=1, null=True)
-    image = ResizedImageField(size=[420, 420], quality=95, force_format='WEBP', upload_to='shop/category/images',
+    image = ResizedImageField(size=[420, 420], quality=100, force_format='WEBP', upload_to='shop/category/images',
                               blank=True, null=True)
     name = models.CharField('Название', max_length=255, blank=False, null=False)
     slug = models.CharField('ЧПУ', max_length=255,blank=True, null=True)
@@ -76,34 +142,30 @@ class SubCategory(models.Model):
 
 class Product(models.Model):
     article = models.CharField('Артикул', max_length=20,blank=True, null=True)
-    size = models.CharField('Размер', max_length=100, blank=True, null=True)
-    order_num = models.IntegerField(default=1, null=True)
-    subcategory = models.ForeignKey(SubCategory,blank=True,null=True,on_delete=models.CASCADE, related_name='products')
-    material = models.ForeignKey(Material,blank=True,null=True,on_delete=models.CASCADE, related_name='material_products')
-    is_new = models.BooleanField('Новинка', default=False, null=False)
-    is_in_stock = models.BooleanField('В наличии?', default=True, null=False)
-    is_popular = models.BooleanField(default=False, null=False)
-    is_active = models.BooleanField(default=True, null=False)
-    display_price = models.DecimalField(default=0.00, max_digits=10, decimal_places=2, blank=True, null=True)
     name = models.CharField('Название', max_length=255, blank=False, null=True)
-    slug = models.CharField('ЧПУ',max_length=255,
+    slug = models.CharField('ЧПУ', max_length=255,
                             help_text='Если не заполнено, создается на основе поля Назавание',
                             blank=True, null=True, editable=False)
+    subcategory = models.ForeignKey(SubCategory,blank=True,null=True,on_delete=models.CASCADE, related_name='products')
+    material = models.ForeignKey(Material,blank=True,null=True,on_delete=models.CASCADE, related_name='material_products')
+    display_price = models.CharField('Цена на карточке', max_length=20,blank=True, null=True)
     short_description = models.TextField('Короткое описание', blank=True, null=False)
     description = CKEditor5Field('Описание', blank=True, null=True, config_name='extends')
 
+    can_cut = models.BooleanField('Нарезка',default=False, null=False)
+    is_active = models.BooleanField('Активен',default=True, null=False)
 
     def __str__(self):
         return f'{self.name}'
 
     class Meta:
-        ordering = ('order_num',)
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False,
@@ -117,8 +179,8 @@ class ProductImage(models.Model):
 
     class Meta:
 
-        verbose_name = 'Доп. изображение товара'
-        verbose_name_plural = 'Доп. изображения товара'
+        verbose_name = 'Изображение товара'
+        verbose_name_plural = 'Изображения товара'
 
 
 class ProductFeature(models.Model):
@@ -131,22 +193,37 @@ class ProductFeature(models.Model):
         return f'{self.label}'
 
     class Meta:
-        verbose_name = 'Характеристика'
-        verbose_name_plural = 'Характеристики'
+        verbose_name = 'Параметр на карточке'
+        verbose_name_plural = 'Параметры на карточке'
+
+class ProductFeatureDetail(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False,
+                                related_name='features_detail')
+    label = models.CharField('Название', max_length=255, blank=False, null=True)
+    value = models.CharField('Значение', max_length=255, blank=False, null=True)
+
+    def __str__(self):
+        return f'{self.label}'
+
+    class Meta:
+        verbose_name = 'Параметр на странице товара'
+        verbose_name_plural = 'Параметры на странице товара'
 
 
 class ProductUnit(models.Model):
     order_num = models.IntegerField(default=1, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False,
                                 related_name='units')
-    label = models.CharField('Название', max_length=255, blank=False, null=True)
-    value = models.CharField('Ед. измерения', max_length=255, blank=False, null=True)
-    price = models.CharField('Цена', max_length=255, blank=True, null=True)
-    price_description = CKEditor5Field('Доп. описание цены', blank=True, null=True, config_name='extends')
-    is_decimal_price = models.BooleanField('Цена дробная', default=False, null=False)
+    thin = models.ForeignKey('UnitThin', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Толщина')
+    width = models.ForeignKey('UnitWidth', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Ширина')
+    length = models.ForeignKey('UnitLen', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Длина')
+
+    price = models.IntegerField('Цена',default=0, blank=False, null=True)
+    price_description = models.CharField('Описание цены', max_length=255, blank=True, null=True)
+    add_price = models.CharField('Доп. цена', max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.label}'
+        return f'{self.thin.name}x{self.width.name}x{self.length.name}'
 
     class Meta:
         ordering = ('order_num',)

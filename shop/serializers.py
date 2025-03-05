@@ -3,11 +3,26 @@ from rest_framework import exceptions, serializers, status, generics
 
 from .models import *
 from django.conf import settings
+from collections import defaultdict
+
+class MaterialPropSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialTag
+        fields = '__all__'
+
+
+class UnitPropSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitWidth
+        fields = '__all__'
+
 
 class MaterialShortSerializer(serializers.ModelSerializer):
+    tags = MaterialPropSerializer(many=True, read_only=True)
+    recommend = MaterialPropSerializer(many=True, read_only=True)
     class Meta:
         model = Material
-        fields = ['name','slug','image']
+        fields = ['name','slug','image','tags','recommend','short_description']
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,9 +30,14 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductUnitSerializer(serializers.ModelSerializer):
+    thin = UnitPropSerializer(many=False, read_only=True)
+    width = UnitPropSerializer(many=False, read_only=True)
+    length = UnitPropSerializer(many=False, read_only=True)
     class Meta:
         model = ProductUnit
         fields = '__all__'
+
+
 
 
 class ProductFeatureSerializer(serializers.ModelSerializer):
@@ -25,10 +45,18 @@ class ProductFeatureSerializer(serializers.ModelSerializer):
         model = ProductFeature
         fields = '__all__'
 
+
+class ProductFeatureDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductFeatureDetail
+        fields = '__all__'
+
+
 class ProductSerializer(serializers.ModelSerializer):
-    features = ProductFeatureSerializer(many=True,required=False,read_only=True)
+    features = ProductFeatureDetailSerializer(many=True,required=False,read_only=True)
     images = ProductImageSerializer(many=True,required=False,read_only=True)
     units = ProductUnitSerializer(many=True,required=False,read_only=True)
+
     cat_slug = serializers.SerializerMethodField()
     cat_name = serializers.SerializerMethodField()
     subcat_slug = serializers.SerializerMethodField()
@@ -47,20 +75,20 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_subcat_name(self,obj):
         return obj.subcategory.name
 
+
+
 class ProductShortSerializer(serializers.ModelSerializer):
     cat_slug = serializers.SerializerMethodField()
     subcat_slug = serializers.SerializerMethodField()
     subcat_name = serializers.SerializerMethodField()
     subcat_text = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
-    material = MaterialShortSerializer(many=False, read_only=True)
+    features = ProductFeatureSerializer(many=True, required=False, read_only=True)
+
     class Meta:
         model = Product
         fields = [
             'article',
-            'is_new',
-            'is_in_stock',
-            'size',
             'image',
             'name',
             'slug',
@@ -69,7 +97,7 @@ class ProductShortSerializer(serializers.ModelSerializer):
             'subcat_name',
             'subcat_text',
             'display_price',
-            'material'
+            'features'
         ]
     def get_image(self,obj):
         main_image = obj.images.filter(is_main=True)

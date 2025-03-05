@@ -19,12 +19,12 @@ class GetMaterials(generics.ListAPIView):
     queryset = Material.objects.all()
 
 class GetCategory(generics.RetrieveAPIView):
-    serializer_class = CategorySerializer
+    serializer_class = CategoryShortSerializer
     queryset = Category.objects.filter()
     lookup_field = 'slug'
 
 class GetSubCategory(generics.RetrieveAPIView):
-    serializer_class = SubCategorySerializer
+    serializer_class = SubCategoryShortSerializer
     queryset = SubCategory.objects.filter()
     lookup_field = 'slug'
 
@@ -51,4 +51,4 @@ class GetMaterial(generics.RetrieveAPIView):
 
 class GetPopularProducts(generics.ListAPIView):
     serializer_class = ProductShortSerializer
-    queryset = Product.objects.filter(is_popular=True, is_active=True)
+    queryset = Product.objects.filter(is_active=True)

@@ -10,6 +10,10 @@ class ProductFeatureInline(NestedStackedInline):
     model = ProductFeature
     extra = 0
 
+class ProductFeatureDetailInline(NestedStackedInline):
+    model = ProductFeatureDetail
+    extra = 0
+
 
 
 class ProductImageInline(NestedStackedInline):
@@ -17,9 +21,9 @@ class ProductImageInline(NestedStackedInline):
     extra = 0
 
 class ProductAdmin(NestedModelAdmin):
-    list_display = ('image_preview','article','name','subcategory','is_new','is_popular',)
+    list_display = ('image_preview','article','name','subcategory','is_active',)
     model = Product
-    inlines = [ProductUnitInline,ProductFeatureInline,ProductImageInline]
+    inlines = [ProductUnitInline,ProductFeatureInline,ProductFeatureDetailInline,ProductImageInline]
     readonly_fields = ['image_preview']
 
     def image_preview(self, obj):
@@ -49,5 +53,10 @@ class ServiceAdmin(NestedModelAdmin):
 admin.site.register(Category)
 admin.site.register(SubCategory,SubCategoryAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Service, ServiceAdmin)
+# admin.site.register(Service, ServiceAdmin)
 admin.site.register(Material)
+admin.site.register(MaterialTag)
+admin.site.register(MaterialRecommend)
+admin.site.register(UnitWidth)
+admin.site.register(UnitLen)
+admin.site.register(UnitThin)
