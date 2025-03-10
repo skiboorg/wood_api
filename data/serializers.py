@@ -20,8 +20,6 @@ class CallbackFormSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
         extra_kwargs = {
-            "name": {"error_messages": {"required": "Имя обязательное поле"}, 'required': True},
-            'email': {"error_messages": {"required": "Email обязательное поле"},'required': True},
             'phone': {"error_messages": {"required": "Телефон обязательное поле"},'required': True},
-            'file': {'required': False},
+
         }

@@ -48,12 +48,12 @@ class ServicePriceInline(NestedStackedInline):
 class ServiceAdmin(NestedModelAdmin):
     list_display = ('name',)
     model = Service
-    inlines = [ServicePriceInline]
+
 
 admin.site.register(Category)
 admin.site.register(SubCategory,SubCategoryAdmin)
 admin.site.register(Product, ProductAdmin)
-# admin.site.register(Service, ServiceAdmin)
+admin.site.register(Service, ServiceAdmin)
 admin.site.register(Material)
 admin.site.register(MaterialTag)
 admin.site.register(MaterialRecommend)

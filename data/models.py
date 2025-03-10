@@ -1,14 +1,15 @@
 from django.db import models
 from django_resized import ResizedImageField
 
+from shop.models import Product
+
 
 class CallbackForm(models.Model):
+
     name = models.CharField('Имя',max_length=255,blank=False, null=True)
-    email= models.EmailField('email',max_length=255,blank=False, null=True)
     phone= models.CharField('Телефон',max_length=255,blank=False, null=True)
-    subject= models.CharField('Тема',max_length=255,blank=True, null=True)
-    text = models.TextField('Текст',blank=True, null=True)
-    file= models.FileField('Файл',upload_to='forms',blank=True, null=True)
+    product= models.CharField('Заказ',max_length=255,blank=False, null=True)
+
     is_done = models.BooleanField('Обработана', default=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

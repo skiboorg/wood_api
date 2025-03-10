@@ -4,7 +4,7 @@ class CallbackFormAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'phone',
-        'subject',
+        'product',
         'is_done',
         'created_at',
     )
