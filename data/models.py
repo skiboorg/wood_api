@@ -6,9 +6,10 @@ from shop.models import Product
 
 class CallbackForm(models.Model):
 
-    name = models.CharField('Имя',max_length=255,blank=False, null=True)
+    name = models.CharField('Имя',max_length=255,blank=True, null=True)
     phone= models.CharField('Телефон',max_length=255,blank=False, null=True)
     product= models.CharField('Заказ',max_length=255,blank=False, null=True)
+    comment= models.TextField('комметарий',blank=True, null=True)
 
     is_done = models.BooleanField('Обработана', default=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
