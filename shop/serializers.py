@@ -10,6 +10,11 @@ class MaterialPropSerializer(serializers.ModelSerializer):
         model = MaterialTag
         fields = '__all__'
 
+class UnitClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitClass
+        fields = '__all__'
+
 
 class UnitPropSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,6 +38,7 @@ class ProductUnitSerializer(serializers.ModelSerializer):
     thin = UnitPropSerializer(many=False, read_only=True)
     width = UnitPropSerializer(many=False, read_only=True)
     length = UnitPropSerializer(many=False, read_only=True)
+    class_type = UnitClassSerializer(many=False, read_only=True)
     class Meta:
         model = ProductUnit
         fields = '__all__'
@@ -53,7 +59,7 @@ class ProductFeatureDetailSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    features = ProductFeatureDetailSerializer(many=True,required=False,read_only=True)
+    features_detail = ProductFeatureDetailSerializer(many=True,required=False,read_only=True)
     images = ProductImageSerializer(many=True,required=False,read_only=True)
     units = ProductUnitSerializer(many=True,required=False,read_only=True)
 

@@ -3,6 +3,17 @@ from pytils.translit import slugify
 from django_ckeditor_5.fields import CKEditor5Field
 from django_resized import ResizedImageField
 
+class UnitClass(models.Model):
+    name = models.CharField('Класс', max_length=255, blank=False, null=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+
+        verbose_name = 'Класс'
+        verbose_name_plural = 'Класс'
+
 class UnitLen(models.Model):
     name = models.CharField('Длина', max_length=255, blank=False, null=False)
 
@@ -216,6 +227,7 @@ class ProductUnit(models.Model):
     order_num = models.IntegerField(default=1, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False,
                                 related_name='units')
+    class_type = models.ForeignKey('UnitClass', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Класс')
     thin = models.ForeignKey('UnitThin', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Толщина')
     width = models.ForeignKey('UnitWidth', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Ширина')
     length = models.ForeignKey('UnitLen', on_delete=models.CASCADE, null=True, blank=False, verbose_name='Длина')
