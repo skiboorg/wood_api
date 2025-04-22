@@ -17,13 +17,11 @@ class CallbackForm(models.Model):
 
 class Banner(models.Model):
     order_num = models.IntegerField(default=10)
-    image_big = ResizedImageField('Баннер десктоп', size=[1440, 640], quality=95, force_format='WEBP', upload_to='banner/images',
-                              blank=False, null=True)
-    image_small = ResizedImageField('Баннер мобилка', size=[760, 640], quality=95, force_format='WEBP',
+
+    image = ResizedImageField(size=[430, 340], quality=95, force_format='WEBP',
                                  upload_to='banner/images',
                                  blank=False, null=True)
-    text_big = models.TextField('Текст большой', blank=True, null=True)
-    text_small = models.TextField('Текст маленький', blank=True, null=True)
+    link = models.CharField(max_length=255, blank=True, null=True)
     def __str__(self):
         return f'{self.order_num}'
 
@@ -31,7 +29,7 @@ class Banner(models.Model):
 
     class Meta:
         verbose_name = 'Баннер'
-        verbose_name_plural = 'Баннеры'
+        verbose_name_plural = 'Баннер'
         ordering = ['order_num']
 
 

@@ -166,6 +166,7 @@ class Product(models.Model):
 
     can_cut = models.BooleanField('Нарезка',default=False, null=False)
     is_active = models.BooleanField('Активен',default=True, null=False)
+    is_popular = models.BooleanField('Популярный',default=False, null=False)
 
     def __str__(self):
         return f'{self.name}'
